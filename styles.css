@@ -129,17 +129,22 @@ h1 {
 button {
     border: none;
     border-radius: 14px;
-    background: rgba(255, 255, 255, 0.9);
+
+    /* 🔥 NOUVELLE COULEUR */
+    background: #AE8E68;
+
     font-size: 22px;
     padding: 25px;
     cursor: pointer;
     touch-action: manipulation;
     transition: transform 0.1s;
-    color: #2b2b2b;
+
+    color: white;
 }
 
 button:active {
     transform: scale(0.97);
+    filter: brightness(0.9);
 }
 
 /* =========================
@@ -163,7 +168,7 @@ button:active {
     flex-direction: column;
     justify-content: center;
     gap: 8px;
-    color: #2b2b2b;
+    color: white;
 }
 
 /* =========================
@@ -174,7 +179,7 @@ button:active {
     aspect-ratio: 1;
     font-size: 34px;
     font-weight: bold;
-    color: #2b2b2b;
+    color: white;
 }
 
 /* =========================
