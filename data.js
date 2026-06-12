@@ -1,16 +1,16 @@
 const DATA = {
     // 📂 CATÉGORIES
     categories: [
-        { id: 1, name: "Old School", color: "#e74c3c", order: 1 },
-        { id: 2, name: "Les Audacieux", color: "#9b59b6", order: 2 },
-        { id: 3, name: "Mocktails", color: "#1abc9c", order: 3 },
-        { id: 4, name: "Planches", color: "#f39c12", order: 4 },
-        { id: 5, name: "Chauds", color: "#d35400", order: 5 },
-        { id: 6, name: "Digestifs & Vins", color: "#8e44ad", order: 6 },
-        { id: 7, name: "Apéritifs", color: "#c0392b", order: 7 },
-        { id: 8, name: "Whiskys / Rhums", color: "#2c3e50", order: 8 },
-        { id: 9, name: "Bières", color: "#f1c40f", order: 9 },
-        { id: 10, name: "Softs", color: "#3498db", order: 10 }
+        { id: 1, name: "Old School", color: "#e6dac6", order: 1 },
+        { id: 2, name: "Les Audacieux", color: "#e6dac6", order: 2 },
+        { id: 3, name: "Mocktails", color: "#e6dac6", order: 3 },
+        { id: 4, name: "Planches", color: "#e6dac6", order: 4 },
+        { id: 5, name: "Chauds", color: "#e6dac6", order: 5 },
+        { id: 6, name: "Digestifs & Vins", color: "#e6dac6", order: 6 },
+        { id: 7, name: "Apéritifs", color: "#e6dac6", order: 7 },
+        { id: 8, name: "Whiskys / Rhums", color: "#e6dac6", order: 8 },
+        { id: 9, name: "Bières", color: "#e6dac6", order: 9 },
+        { id: 10, name: "Softs", color: "#e6dac6", order: 10 }
     ],
 
     // 🍹 BOISSONS
