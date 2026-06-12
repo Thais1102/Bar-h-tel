@@ -5,7 +5,11 @@ html, body {
     height: 100%;
     overflow: hidden;
     font-family: Arial, sans-serif;
-background: url("Fond.png") center center / cover no-repeat fixed;
+    background-image: url("Fond.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 * {
@@ -15,6 +19,7 @@ background: url("Fond.png") center center / cover no-repeat fixed;
 #app {
     width: 100vw;
     height: 100vh;
+    background: transparent !important;
 }
 
 .screen {
@@ -22,6 +27,7 @@ background: url("Fond.png") center center / cover no-repeat fixed;
     padding: 20px;
     display: flex;
     flex-direction: column;
+    background: transparent !important;
 }
 
 .screen-header {
@@ -151,15 +157,9 @@ button:active {
         font-size: 48px;
     }
 }
+
 .grid-rooms {
     max-height: 70vh;
     overflow-y: auto;
     padding-bottom: 20px;
-}
-#app {
-    background: transparent;
-}
-
-.screen {
-    background: transparent;
 }
