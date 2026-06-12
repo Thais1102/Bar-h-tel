@@ -10,7 +10,8 @@ const DATA = {
         { id: 7, name: "Vins", color: "#ae8e68", order: 7 },
         { id: 8, name: "Bières", color: "#ae8e68", order: 8 },
         { id: 9, name: "Whiskys & Rhums", color: "#ae8e68", order: 9 },
-        { id: 10, name: "Digestifs", color: "#ae8e68", order: 10 }
+        { id: 10, name: "Digestifs", color: "#ae8e68", order: 10 },
+        { id: 11, name: "Suppléments", color: "#ae8e68", order: 11 }
     ],
 
     // 🍹 BOISSONS
@@ -69,8 +70,6 @@ const DATA = {
         { id: 44, name: "Sodas", category: 5, price: 3.50, order: 5 },
         { id: 45, name: "Limonade", category: 5, price: 3, order: 6 },
         { id: 46, name: "Diabolo", category: 5, price: 3.50, order: 7 },
-        { id: 47, name: "Redbull", category: 5, price: 5, order: 8 },
-        { id: 48, name: "Fever Tree", category: 5, price: 5, order: 9 },
 
         // =========================
         // APÉRITIFS
@@ -133,7 +132,14 @@ const DATA = {
         { id: 106, name: "Cointreau", category: 10, price: 7, order: 7 },
         { id: 107, name: "Limoncello", category: 10, price: 7, order: 8 },
         { id: 108, name: "Cognac", category: 10, price: 8, order: 9 },
-        { id: 109, name: "Calvados", category: 10, price: 8, order: 10 }
+        { id: 109, name: "Calvados", category: 10, price: 8, order: 10 },
+
+        // =========================
+        // SUPPLÉMENTS
+        // =========================
+        { id: 120, name: "Adjuvant", category: 11, price: 1, order: 1 },
+        { id: 121, name: "Fever Tree", category: 11, price: 2, order: 2 },
+        { id: 122, name: "Redbull", category: 11, price: 2, order: 3 }
     ],
 
     // 🛏️ CHAMBRES
