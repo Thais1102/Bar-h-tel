@@ -1,140 +1,244 @@
-class BarApp {
-    constructor() {
-        this.state = {
-            screen: "categories",
-            category: null,
-            drink: null
-        };
+class App {
 
-        this.render();
-    }
+constructor() {
+    this.state = {
+        screen: "categories",
+        previous: null,
 
-    // ======================
-    // NAVIGATION
-    // ======================
+        selectedCategory: null,
+        selectedDrink: null
+    };
 
-    selectCategory(id) {
-        this.state.category = id;
-        this.state.screen = "drinks";
-        this.render();
-    }
+    this.render();
+}
 
-    selectDrink(drink) {
-        this.state.drink = drink;
-        this.state.screen = "rooms";
-        this.render();
-    }
+/* =========================
+   NAVIGATION
+========================= */
 
-    selectRoom(room) {
+go(screen) {
+    this.state.previous = this.state.screen;
+    this.state.screen = screen;
+    this.render();
+}
 
-        const item = {
-            id: Date.now(),
-            room: room,
-            drink: this.state.drink.name,
-            price: this.state.drink.price,
-            date: new Date()
-        };
+back() {
+    this.state.screen = this.state.previous || "categories";
+    this.render();
+}
 
-        DATA.consumptions.push(item);
-        localStorage.setItem("bar", JSON.stringify(DATA.consumptions));
+/* =========================
+   AJOUT CONSOMMATION
+========================= */
 
-        this.toast(`Ch ${room} → ${this.state.drink.name}`);
+addConsumption(room, drink) {
 
-        this.state = { screen: "categories", category: null, drink: null };
-        this.render();
-    }
+    const item = {
+        id: Date.now(),
+        room,
+        drinkName: drink.name,
+        price: drink.price,
+        date: new Date().toISOString()
+    };
 
-    // ======================
-    // RENDER
-    // ======================
+    DATA.consumptions.push(item);
+    localStorage.setItem("consumptions", JSON.stringify(DATA.consumptions));
+}
 
-    render() {
-        const app = document.getElementById("app");
+/* =========================
+   CAISSE
+========================= */
 
-        if (!app) return;
+renderCash() {
 
-        if (this.state.screen === "categories") {
+    const grouped = {};
+
+    DATA.consumptions.forEach(c => {
+
+        const day = new Date(c.date).toISOString().split("T")[0];
+
+        if (!grouped[day]) grouped[day] = {};
+        if (!grouped[day][c.room]) grouped[day][c.room] = [];
+
+        grouped[day][c.room].push(c);
+    });
+
+    const days = Object.keys(grouped).sort().reverse();
+
+    return `
+    <div class="screen">
+
+        <h1>📊 Caisse</h1>
+
+        ${days.map(day => {
+
+            const rooms = grouped[day];
+
+            const totalDay = Object.values(rooms)
+                .flat()
+                .reduce((a,b)=>a+b.price,0);
+
+            return `
+            <div style="background:#fff;padding:15px;margin:10px 0;border-radius:10px;">
+
+                <h2>📅 ${day} — ${totalDay.toFixed(2)}€</h2>
+
+                ${Object.keys(rooms).sort((a,b)=>a-b).map(room => {
+
+                    const items = rooms[room];
+                    const totalRoom = items.reduce((a,b)=>a+b.price,0);
+
+                    return `
+                    <div style="margin-top:10px;padding:10px;border:1px solid #eee;border-radius:8px;">
+
+                        <h3>🚪 Chambre ${room} — ${totalRoom.toFixed(2)}€</h3>
+
+                        ${items.map(i=>`
+                            <div style="display:flex;justify-content:space-between;">
+                                <span>${i.drinkName}</span>
+                                <strong>${i.price.toFixed(2)}€</strong>
+                            </div>
+                        `).join("")}
+
+                    </div>
+                    `;
+                }).join("")}
+
+            </div>
+            `;
+        }).join("")}
+
+        <button onclick="app.back()">← Retour</button>
+
+    </div>
+    `;
+}
+
+/* =========================
+   CATEGORIES
+========================= */
+
+renderCategories() {
+
+    return `
+    <div class="screen">
+
+        <h1>Catégories</h1>
+
+        ${DATA.categories.map(c=>`
+            <button onclick="app.goDrinks(${c.id})"
+                style="background:${c.color}">
+                ${c.name}
+            </button>
+        `).join("")}
+
+        <button onclick="app.go('cash')">📊 Caisse</button>
+
+    </div>
+    `;
+}
+
+/* =========================
+   DRINKS
+========================= */
+
+goDrinks(catId) {
+    this.state.selectedCategory = catId;
+    this.go("drinks");
+}
+
+renderDrinks() {
+
+    const drinks = DATA.drinks
+        .filter(d => d.category === this.state.selectedCategory);
+
+    return `
+    <div class="screen">
+
+        <h2>Boissons</h2>
+
+        ${drinks.map(d=>`
+            <button onclick="app.goRooms(${d.id})">
+                ${d.name} - ${d.price}€
+            </button>
+        `).join("")}
+
+        <button onclick="app.back()">← Retour</button>
+
+    </div>
+    `;
+}
+
+/* =========================
+   ROOMS
+========================= */
+
+goRooms(drinkId) {
+    this.state.selectedDrink = DATA.drinks.find(d => d.id === drinkId);
+    this.go("rooms");
+}
+
+renderRooms() {
+
+    return `
+    <div class="screen">
+
+        <h2>Chambres</h2>
+
+        ${DATA.rooms.map(r=>`
+            <button onclick="app.selectRoom(${r})">
+                Chambre ${r}
+            </button>
+        `).join("")}
+
+        <button onclick="app.back()">← Retour</button>
+
+    </div>
+    `;
+}
+
+selectRoom(room) {
+
+    this.addConsumption(room, this.state.selectedDrink);
+
+    alert("Ajouté ✔");
+
+    this.state.screen = "categories";
+    this.render();
+}
+
+/* =========================
+   RENDER GLOBAL
+========================= */
+
+render() {
+
+    const app = document.getElementById("app");
+
+    switch(this.state.screen) {
+
+        case "categories":
             app.innerHTML = this.renderCategories();
-        }
+            break;
 
-        if (this.state.screen === "drinks") {
+        case "drinks":
             app.innerHTML = this.renderDrinks();
-        }
+            break;
 
-        if (this.state.screen === "rooms") {
+        case "rooms":
             app.innerHTML = this.renderRooms();
-        }
+            break;
+
+        case "cash":
+            app.innerHTML = this.renderCash();
+            break;
     }
+}
 
-    renderCategories() {
-        return `
-        <div class="screen">
-            <h1>Catégories</h1>
-
-            <div class="grid">
-                ${DATA.categories.map(c => `
-                    <button onclick="app.selectCategory(${c.id})">
-                        ${c.name}
-                    </button>
-                `).join("")}
-            </div>
-        </div>`;
-    }
-
-    renderDrinks() {
-        const drinks = DATA.drinks.filter(d => d.category === this.state.category);
-
-        return `
-        <div class="screen">
-            <h1>Boissons</h1>
-
-            <button onclick="app.state.screen='categories';app.render()">← Retour</button>
-
-            <div class="grid">
-                ${drinks.map(d => `
-                    <button onclick='app.selectDrink(${JSON.stringify(d)})'>
-                        ${d.name}<br>${d.price}€
-                    </button>
-                `).join("")}
-            </div>
-        </div>`;
-    }
-
-    renderRooms() {
-        return `
-        <div class="screen">
-            <h1>Chambres</h1>
-
-            <button onclick="app.state.screen='drinks';app.render()">← Retour</button>
-
-            <div class="grid">
-                ${DATA.rooms.map(r => `
-                    <button onclick="app.selectRoom(${r})">
-                        ${r}
-                    </button>
-                `).join("")}
-            </div>
-        </div>`;
-    }
-
-    // ======================
-    // NOTIFICATION
-    // ======================
-
-    toast(msg) {
-        const t = document.createElement("div");
-        t.className = "toast";
-        t.innerText = msg;
-
-        document.body.appendChild(t);
-
-        setTimeout(() => t.remove(), 1500);
-    }
 }
 
 let app;
 
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("APP READY");
-    app = new BarApp();
+    app = new App();
 });
