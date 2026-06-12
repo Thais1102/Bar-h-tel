@@ -1,5 +1,5 @@
 // ============================================
-// APPLICATION PRINCIPALE - BAR HÔTEL
+// BAR HÔTEL - APP PRINCIPALE STABLE
 // ============================================
 
 class BarApp {
@@ -25,16 +25,16 @@ class BarApp {
     // ============================================
 
     selectCategory(categoryId, categoryName) {
-        this.state.selectedCategory = categoryId;
+        this.state.selectedCategory = Number(categoryId);
         this.state.selectedCategoryName = categoryName;
         this.state.screen = 'drinks';
         this.render();
     }
 
     selectDrink(drinkId, drinkName, drinkPrice) {
-        this.state.selectedDrink = drinkId;
+        this.state.selectedDrink = Number(drinkId);
         this.state.selectedDrinkName = drinkName;
-        this.state.selectedDrinkPrice = drinkPrice;
+        this.state.selectedDrinkPrice = Number(drinkPrice);
         this.state.screen = 'rooms';
         this.render();
     }
@@ -42,49 +42,52 @@ class BarApp {
     selectRoom(roomNumber) {
         addConsumption(roomNumber, this.state.selectedDrink);
 
-        this.showNotification(`✓ Chambre ${roomNumber} - ${this.state.selectedDrinkName}`);
+        this.showNotification(
+            `✓ Chambre ${roomNumber} - ${this.state.selectedDrinkName}`
+        );
 
-        this.state.selectedCategory = null;
-        this.state.selectedDrink = null;
-        this.state.selectedCategoryName = null;
-        this.state.selectedDrinkName = null;
+        this.resetSelection();
 
         setTimeout(() => {
             this.state.screen = 'categories';
             this.render();
-        }, 600);
+        }, 500);
     }
 
-    // ============================================
-    // CAISSE RAPIDE
-    // ============================================
+    resetSelection() {
+        this.state.selectedCategory = null;
+        this.state.selectedCategoryName = null;
+        this.state.selectedDrink = null;
+        this.state.selectedDrinkName = null;
+        this.state.selectedDrinkPrice = null;
+    }
 
-    goToCashier() {
-        this.state.screen = 'cashier';
+    goToHistoric() {
+        this.state.screen = 'historic';
         this.render();
     }
 
-    selectQuickCategory(id, name) {
-        this.state.selectedCategory = id;
-        this.state.selectedCategoryName = name;
+    goToAdmin() {
+        this.state.screen = 'admin';
         this.render();
     }
 
-    selectQuickDrink(id, name, price) {
-        this.state.selectedDrink = id;
-        this.state.selectedDrinkName = name;
-        this.state.selectedDrinkPrice = price;
+    backToCategories() {
+        this.resetSelection();
+        this.state.screen = 'categories';
         this.render();
     }
 
-    selectQuickRoom(room) {
-        addConsumption(room, this.state.selectedDrink);
-
-        this.showNotification(`✓ ${room} - ${this.state.selectedDrinkName}`);
+    backToDrinks() {
+        this.state.selectedDrink = null;
+        this.state.selectedDrinkName = null;
+        this.state.selectedDrinkPrice = null;
+        this.state.screen = 'drinks';
+        this.render();
     }
 
     // ============================================
-    // NOTIFICATIONS
+    // NOTIFICATION
     // ============================================
 
     showNotification(message) {
@@ -97,32 +100,33 @@ class BarApp {
         setTimeout(() => {
             notif.classList.add('hide');
             setTimeout(() => notif.remove(), 300);
-        }, 1200);
+        }, 1500);
     }
 
     // ============================================
-    // RENDER PRINCIPAL
+    // RENDER GLOBAL
     // ============================================
 
     render() {
         const app = document.getElementById('app');
 
-        switch (this.state.screen) {
+        if (!app) return;
 
+        switch (this.state.screen) {
             case 'categories':
                 app.innerHTML = this.renderCategories();
                 break;
-
             case 'drinks':
                 app.innerHTML = this.renderDrinks();
                 break;
-
             case 'rooms':
                 app.innerHTML = this.renderRooms();
                 break;
-
-            case 'cashier':
-                app.innerHTML = this.renderCashier();
+            case 'historic':
+                app.innerHTML = this.renderHistoric();
+                break;
+            case 'admin':
+                app.innerHTML = this.renderAdmin();
                 break;
         }
     }
@@ -132,27 +136,34 @@ class BarApp {
     // ============================================
 
     renderCategories() {
-        const categories = DATA.categories.sort((a,b)=>a.order-b.order);
+        const categories = [...DATA.categories].sort((a, b) => a.order - b.order);
 
         return `
-            <div class="screen">
-                <h1>🍸 Bar Hôtel</h1>
+        <div class="screen">
+            <div class="screen-header">
+                <h1>Catégories</h1>
+                <p>Choisissez une boisson</p>
+            </div>
 
+            <div class="screen-content">
                 <div class="grid-categories">
-                    ${categories.map(c => `
+                    ${categories.map(cat => `
                         <button 
-                            onclick="app.selectCategory(${c.id}, '${c.name}')"
-                            style="background:${c.color}"
+                            class="btn-category"
+                            style="background:${cat.color}"
+                            onclick="app.selectCategory(${cat.id}, ${JSON.stringify(cat.name)})"
                         >
-                            ${c.name}
+                            ${cat.name}
                         </button>
                     `).join('')}
                 </div>
-
-                <div style="margin-top:15px;">
-                    <button onclick="app.goToCashier()">⚡ Caisse rapide</button>
-                </div>
             </div>
+
+            <div class="screen-footer">
+                <button class="btn-nav" onclick="app.goToHistoric()">Historique</button>
+                <button class="btn-nav" onclick="app.goToAdmin()">Admin</button>
+            </div>
+        </div>
         `;
     }
 
@@ -161,22 +172,35 @@ class BarApp {
     // ============================================
 
     renderDrinks() {
-        const drinks = DATA.drinks.filter(d => d.category === this.state.selectedCategory);
+        const drinks = DATA.drinks
+            .filter(d => Number(d.category) === Number(this.state.selectedCategory))
+            .sort((a, b) => a.order - b.order);
 
         return `
-            <div class="screen">
-                <h2>${this.state.selectedCategoryName}</h2>
+        <div class="screen">
+            <div class="screen-header">
+                <h1>${this.state.selectedCategoryName}</h1>
+                <p>Choisissez une boisson</p>
+            </div>
 
+            <div class="screen-content">
                 <div class="grid-drinks">
-                    ${drinks.map(d => `
-                        <button onclick="app.selectDrink(${d.id}, '${d.name}', ${d.price})">
-                            ${d.name}
+                    ${drinks.map(drink => `
+                        <button 
+                            class="btn-drink"
+                            onclick="app.selectDrink(${drink.id}, ${JSON.stringify(drink.name)}, ${drink.price})"
+                        >
+                            <div class="btn-drink-name">${drink.name}</div>
+                            <div class="btn-drink-price">${drink.price.toFixed(2)}€</div>
                         </button>
                     `).join('')}
                 </div>
-
-                <button onclick="app.state.screen='categories'; app.render()">← Retour</button>
             </div>
+
+            <div class="screen-footer">
+                <button class="btn-nav" onclick="app.backToCategories()">Retour</button>
+            </div>
+        </div>
         `;
     }
 
@@ -186,76 +210,86 @@ class BarApp {
 
     renderRooms() {
         return `
-            <div class="screen">
-                <h2>${this.state.selectedDrinkName}</h2>
+        <div class="screen">
+            <div class="screen-header">
+                <h1>Chambres</h1>
+                <p>${this.state.selectedDrinkName}</p>
+            </div>
 
+            <div class="screen-content">
                 <div class="grid-rooms">
-                    ${DATA.rooms.map(r => `
-                        <button onclick="app.selectRoom(${r})">
-                            ${r}
+                    ${DATA.rooms.map(room => `
+                        <button 
+                            class="btn-room"
+                            onclick="app.selectRoom(${room})"
+                        >
+                            ${room}
                         </button>
                     `).join('')}
                 </div>
-
-                <button onclick="app.state.screen='drinks'; app.render()">← Retour</button>
             </div>
+
+            <div class="screen-footer">
+                <button class="btn-nav" onclick="app.backToDrinks()">Retour</button>
+            </div>
+        </div>
         `;
     }
 
     // ============================================
-    // CAISSE RAPIDE (ULTRA SPEED)
+    // HISTORIQUE
     // ============================================
 
-    renderCashier() {
-
-        const categories = DATA.categories.sort((a,b)=>a.order-b.order);
-
-        const drinks = this.state.selectedCategory
-            ? DATA.drinks.filter(d => d.category === this.state.selectedCategory)
-            : [];
+    renderHistoric() {
+        const today = getTodayConsumptions();
+        const total = today.reduce((sum, c) => sum + c.price, 0);
 
         return `
-            <div class="screen">
-
-                <h1>⚡ CAISSE RAPIDE</h1>
-
-                <!-- CATEGORIES -->
-                <div style="display:flex; gap:5px; flex-wrap:wrap;">
-                    ${categories.map(c => `
-                        <button onclick="app.selectQuickCategory(${c.id}, '${c.name}')"
-                            style="background:${c.color}">
-                            ${c.name}
-                        </button>
-                    `).join('')}
-                </div>
-
-                <hr>
-
-                <!-- DRINKS -->
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px;">
-                    ${drinks.map(d => `
-                        <button onclick="app.selectQuickDrink(${d.id}, '${d.name}', ${d.price})">
-                            ${d.name}
-                        </button>
-                    `).join('')}
-                </div>
-
-                <hr>
-
-                <!-- ROOMS -->
-                <div style="display:grid; grid-template-columns:repeat(5,1fr); gap:5px;">
-                    ${DATA.rooms.map(r => `
-                        <button onclick="app.selectQuickRoom(${r})">
-                            ${r}
-                        </button>
-                    `).join('')}
-                </div>
-
-                <div style="margin-top:10px;">
-                    <button onclick="app.state.screen='categories'; app.render()">← Retour</button>
-                </div>
-
+        <div class="screen">
+            <div class="screen-header">
+                <h1>Historique</h1>
+                <p>${total.toFixed(2)}€</p>
             </div>
+
+            <div class="screen-content">
+                ${today.length === 0 ? `
+                    <p style="text-align:center;color:#999;">Aucune consommation</p>
+                ` : today.map(c => `
+                    <div class="history-item">
+                        <div>
+                            Chambre ${c.room} - ${c.drinkName}
+                        </div>
+                        <div>${c.price.toFixed(2)}€</div>
+                    </div>
+                `).join('')}
+            </div>
+
+            <div class="screen-footer">
+                <button class="btn-nav" onclick="app.backToCategories()">Retour</button>
+            </div>
+        </div>
+        `;
+    }
+
+    // ============================================
+    // ADMIN SIMPLE
+    // ============================================
+
+    renderAdmin() {
+        return `
+        <div class="screen">
+            <div class="screen-header">
+                <h1>Admin</h1>
+            </div>
+
+            <div class="screen-content">
+                <p>Consommations: ${DATA.consumptions.length}</p>
+            </div>
+
+            <div class="screen-footer">
+                <button class="btn-nav" onclick="app.backToCategories()">Retour</button>
+            </div>
+        </div>
         `;
     }
 }
