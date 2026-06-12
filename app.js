@@ -9,9 +9,9 @@ class BarApp {
         this.render();
     }
 
-    // -------------------
+    // ======================
     // NAVIGATION
-    // -------------------
+    // ======================
 
     selectCategory(id) {
         this.state.category = id;
@@ -29,7 +29,7 @@ class BarApp {
 
         const item = {
             id: Date.now(),
-            room,
+            room: room,
             drink: this.state.drink.name,
             price: this.state.drink.price,
             date: new Date()
@@ -38,18 +38,20 @@ class BarApp {
         DATA.consumptions.push(item);
         localStorage.setItem("bar", JSON.stringify(DATA.consumptions));
 
-        this.toast("Ch " + room + " → " + this.state.drink.name);
+        this.toast(`Ch ${room} → ${this.state.drink.name}`);
 
         this.state = { screen: "categories", category: null, drink: null };
         this.render();
     }
 
-    // -------------------
+    // ======================
     // RENDER
-    // -------------------
+    // ======================
 
     render() {
         const app = document.getElementById("app");
+
+        if (!app) return;
 
         if (this.state.screen === "categories") {
             app.innerHTML = this.renderCategories();
@@ -68,6 +70,7 @@ class BarApp {
         return `
         <div class="screen">
             <h1>Catégories</h1>
+
             <div class="grid">
                 ${DATA.categories.map(c => `
                     <button onclick="app.selectCategory(${c.id})">
@@ -114,14 +117,15 @@ class BarApp {
         </div>`;
     }
 
-    // -------------------
-    // TOAST
-    // -------------------
+    // ======================
+    // NOTIFICATION
+    // ======================
 
     toast(msg) {
         const t = document.createElement("div");
         t.className = "toast";
         t.innerText = msg;
+
         document.body.appendChild(t);
 
         setTimeout(() => t.remove(), 1500);
@@ -129,6 +133,8 @@ class BarApp {
 }
 
 let app;
+
 document.addEventListener("DOMContentLoaded", () => {
+    console.log("APP READY");
     app = new BarApp();
 });
