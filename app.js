@@ -1,12 +1,9 @@
 class BarApp {
     constructor() {
         this.state = {
-            screen: 'categories',
-            selectedCategory: null,
-            selectedCategoryName: null,
-            selectedDrink: null,
-            selectedDrinkName: null,
-            selectedDrinkPrice: null
+            screen: "categories",
+            category: null,
+            drink: null
         };
 
         this.init();
@@ -16,286 +13,138 @@ class BarApp {
         this.render();
     }
 
-    // ============================================
+    // =========================
     // NAVIGATION
-    // ============================================
+    // =========================
 
-    selectCategory(categoryId, categoryName) {
-        this.state.selectedCategory = categoryId;
-        this.state.selectedCategoryName = categoryName;
-        this.state.screen = 'drinks';
+    selectCategory(id) {
+        this.state.category = id;
+        this.state.screen = "drinks";
         this.render();
     }
 
-    selectDrink(drinkId, drinkName, drinkPrice) {
-        this.state.selectedDrink = drinkId;
-        this.state.selectedDrinkName = drinkName;
-        this.state.selectedDrinkPrice = drinkPrice;
-        this.state.screen = 'rooms';
+    selectDrink(id) {
+        this.state.drink = id;
+        this.state.screen = "rooms";
         this.render();
     }
 
-    selectRoom(roomNumber) {
-        addConsumption(roomNumber, this.state.selectedDrink);
+    selectRoom(room) {
+        addConsumption(room, this.state.drink);
 
-        this.showNotification(`✓ Chambre ${roomNumber} - ${this.state.selectedDrinkName}`);
+        this.showNotif("Ajouté ✔ Chambre " + room);
 
-        this.state.selectedCategory = null;
-        this.state.selectedCategoryName = null;
-        this.state.selectedDrink = null;
-        this.state.selectedDrinkName = null;
-        this.state.selectedDrinkPrice = null;
-
-        setTimeout(() => {
-            this.state.screen = 'categories';
-            this.render();
-        }, 600);
-    }
-
-    goToHistoric() {
-        this.state.screen = 'historic';
+        this.state = { screen: "categories", category: null, drink: null };
         this.render();
     }
 
-    goToAdmin() {
-        this.state.screen = 'admin';
+    back() {
+        this.state.screen = "categories";
         this.render();
     }
 
-    backToCategories() {
-        this.state = {
-            screen: 'categories',
-            selectedCategory: null,
-            selectedCategoryName: null,
-            selectedDrink: null,
-            selectedDrinkName: null,
-            selectedDrinkPrice: null
-        };
-        this.render();
+    // =========================
+    // NOTIF
+    // =========================
+
+    showNotif(text) {
+        const n = document.createElement("div");
+        n.className = "notif";
+        n.innerText = text;
+
+        document.body.appendChild(n);
+
+        setTimeout(() => n.remove(), 1500);
     }
 
-    backToDrinks() {
-        this.state.screen = 'drinks';
-        this.state.selectedDrink = null;
-        this.state.selectedDrinkName = null;
-        this.state.selectedDrinkPrice = null;
-        this.render();
-    }
-
-    // ============================================
-    // NOTIFICATION
-    // ============================================
-
-    showNotification(message) {
-        const notif = document.createElement('div');
-        notif.className = 'notification';
-        notif.textContent = message;
-        document.body.appendChild(notif);
-
-        setTimeout(() => {
-            notif.classList.add('hide');
-            setTimeout(() => notif.remove(), 400);
-        }, 1500);
-    }
-
-    // ============================================
+    // =========================
     // RENDER
-    // ============================================
+    // =========================
 
     render() {
-        const app = document.getElementById('app');
+        const app = document.getElementById("app");
 
-        if (!app) return;
+        if (this.state.screen === "categories") {
+            app.innerHTML = this.renderCategories();
+        }
 
-        switch (this.state.screen) {
-            case 'categories':
-                app.innerHTML = this.renderCategories();
-                break;
+        if (this.state.screen === "drinks") {
+            app.innerHTML = this.renderDrinks();
+        }
 
-            case 'drinks':
-                app.innerHTML = this.renderDrinks();
-                break;
-
-            case 'rooms':
-                app.innerHTML = this.renderRooms();
-                break;
-
-            case 'historic':
-                app.innerHTML = this.renderHistoric();
-                break;
-
-            case 'admin':
-                app.innerHTML = this.renderAdmin();
-                break;
+        if (this.state.screen === "rooms") {
+            app.innerHTML = this.renderRooms();
         }
     }
 
-    // ============================================
-    // CATÉGORIES
-    // ============================================
+    // =========================
+    // CATEGORIES
+    // =========================
 
     renderCategories() {
-        const categories = DATA.categories.sort((a, b) => a.order - b.order);
-
         return `
-            <div class="screen">
-                <div class="screen-header">
-                    <h1>Catégories</h1>
-                </div>
+        <div class="screen">
+            <h1>Catégories</h1>
 
-                <div class="screen-content">
-                    <div class="grid-categories">
-                        ${categories.map(cat => `
-                            <button class="btn-category"
-                                style="background:${cat.color}"
-                                onclick="app.selectCategory(${cat.id}, '${cat.name}')">
-                                ${cat.name}
-                            </button>
-                        `).join('')}
-                    </div>
-                </div>
-
-                <div class="screen-footer">
-                    <button class="btn-nav" onclick="app.goToHistoric()">Historique</button>
-                    <button class="btn-nav" onclick="app.goToAdmin()">Admin</button>
-                </div>
+            <div class="grid">
+                ${DATA.categories.map(c => `
+                    <button onclick="app.selectCategory(${c.id})"
+                        style="background:${c.color}">
+                        ${c.name}
+                    </button>
+                `).join("")}
             </div>
-        `;
+        </div>`;
     }
 
-    // ============================================
-    // BOISSONS
-    // ============================================
+    // =========================
+    // DRINKS
+    // =========================
 
     renderDrinks() {
-        const drinks = DATA.drinks
-            .filter(d => d.category === this.state.selectedCategory)
-            .sort((a, b) => a.order - b.order);
+        const drinks = DATA.drinks.filter(d => d.category === this.state.category);
 
         return `
-            <div class="screen">
-                <div class="screen-header">
-                    <h1>${this.state.selectedCategoryName}</h1>
-                </div>
+        <div class="screen">
+            <button onclick="app.back()">← Retour</button>
 
-                <div class="screen-content">
-                    <div class="grid-drinks">
-                        ${drinks.map(drink => `
-                            <button class="btn-drink"
-                                onclick="app.selectDrink(${drink.id}, '${drink.name}', ${drink.price})">
-                                <div>${drink.name}</div>
-                                <div class="btn-drink-price">${drink.price.toFixed(2)}€</div>
-                            </button>
-                        `).join('')}
-                    </div>
-                </div>
+            <h1>Boissons</h1>
 
-                <div class="screen-footer">
-                    <button class="btn-nav" onclick="app.backToCategories()">Retour</button>
-                </div>
+            <div class="grid">
+                ${drinks.map(d => `
+                    <button onclick="app.selectDrink(${d.id})">
+                        ${d.name}<br>
+                        ${d.price}€
+                    </button>
+                `).join("")}
             </div>
-        `;
+        </div>`;
     }
 
-    // ============================================
-    // CHAMBRES
-    // ============================================
+    // =========================
+    // ROOMS
+    // =========================
 
     renderRooms() {
         return `
-            <div class="screen">
-                <div class="screen-header">
-                    <h1>Chambres</h1>
-                    <p>${this.state.selectedDrinkName}</p>
-                </div>
+        <div class="screen">
+            <button onclick="app.back()">← Retour</button>
 
-                <div class="screen-content">
-                    <div class="grid-rooms">
-                        ${DATA.rooms.map(room => `
-                            <button class="btn-room"
-                                onclick="app.selectRoom(${room})">
-                                ${room}
-                            </button>
-                        `).join('')}
-                    </div>
-                </div>
+            <h1>Chambres</h1>
 
-                <div class="screen-footer">
-                    <button class="btn-nav" onclick="app.backToDrinks()">Retour</button>
-                </div>
+            <div class="grid">
+                ${DATA.rooms.map(r => `
+                    <button onclick="app.selectRoom(${r})">
+                        ${r}
+                    </button>
+                `).join("")}
             </div>
-        `;
-    }
-
-    // ============================================
-    // HISTORIQUE
-    // ============================================
-
-    renderHistoric() {
-        const today = getTodayConsumptions();
-        const total = today.reduce((s, c) => s + c.price, 0);
-
-        return `
-            <div class="screen">
-                <div class="screen-header">
-                    <h1>Aujourd'hui</h1>
-                    <p>${total.toFixed(2)}€</p>
-                </div>
-
-                <div class="screen-content">
-                    ${today.map(c => `
-                        <div class="history-item">
-                            <div>
-                                Chambre ${c.room} - ${c.drinkName}
-                            </div>
-                            <div>${c.price.toFixed(2)}€</div>
-                            <button onclick="app.removeConsumption(${c.id})">🗑️</button>
-                        </div>
-                    `).join('')}
-                </div>
-
-                <div class="screen-footer">
-                    <button class="btn-nav" onclick="app.backToCategories()">Retour</button>
-                    <button class="btn-nav" onclick="exportToCSV()">Export</button>
-                </div>
-            </div>
-        `;
-    }
-
-    removeConsumption(id) {
-        DATA.consumptions = DATA.consumptions.filter(c => c.id !== id);
-        saveConsumptions();
-        this.render();
-    }
-
-    // ============================================
-    // ADMIN SIMPLE
-    // ============================================
-
-    renderAdmin() {
-        return `
-            <div class="screen">
-                <div class="screen-header">
-                    <h1>Admin</h1>
-                </div>
-
-                <div class="screen-content">
-                    <p>Consommations : ${DATA.consumptions.length}</p>
-                </div>
-
-                <div class="screen-footer">
-                    <button class="btn-nav" onclick="app.backToCategories()">Retour</button>
-                </div>
-            </div>
-        `;
+        </div>`;
     }
 }
 
-// ============================================
 // INIT
-// ============================================
-
 let app;
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
     app = new BarApp();
 });
