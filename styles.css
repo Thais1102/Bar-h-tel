@@ -1,15 +1,23 @@
 html, body {
     margin: 0;
+    padding: 0;
     height: 100%;
     font-family: Arial;
+    background: #f5f5f5;
 }
 
 #app {
-    height: 100%;
+    height: 100vh;
+    width: 100vw;
 }
 
 .screen {
     padding: 20px;
+}
+
+h1 {
+    font-size: 40px;
+    margin-bottom: 20px;
 }
 
 .grid {
@@ -22,8 +30,13 @@ button {
     padding: 40px;
     font-size: 22px;
     border: none;
-    background: #eee;
     border-radius: 12px;
+    background: #eaeaea;
+    touch-action: manipulation;
+}
+
+button:active {
+    transform: scale(0.97);
 }
 
 .toast {
@@ -33,6 +46,7 @@ button {
     transform: translateX(-50%);
     background: green;
     color: white;
-    padding: 10px 20px;
+    padding: 15px 25px;
     border-radius: 10px;
+    z-index: 9999;
 }
