@@ -1,307 +1,140 @@
 // ============================================
-// APPLICATION PRINCIPALE - BAR HÔTEL
+// DATA BAR HÔTEL
 // ============================================
 
-class BarApp {
-    constructor() {
-        this.state = {
-            screen: 'categories',
-            selectedCategory: null,
-            selectedCategoryName: null,
-            selectedDrink: null,
-            selectedDrinkName: null,
-            selectedDrinkPrice: null
-        };
-        
-        this.init();
-    }
-
-    init() {
-        this.render();
-    }
-
-    // ============================================
-    // NAVIGATION
-    // ============================================
-
-    selectCategory(categoryId, categoryName) {
-        this.state.selectedCategory = categoryId;
-        this.state.selectedCategoryName = categoryName;
-        this.state.screen = 'drinks';
-        this.render();
-    }
-
-    selectDrink(drinkId, drinkName, drinkPrice) {
-        this.state.selectedDrink = drinkId;
-        this.state.selectedDrinkName = drinkName;
-        this.state.selectedDrinkPrice = drinkPrice;
-        this.state.screen = 'rooms';
-        this.render();
-    }
-
-    selectRoom(roomNumber) {
-        addConsumption(roomNumber, this.state.selectedDrink);
-
-        this.showNotification(`✓ Chambre ${roomNumber} - ${this.state.selectedDrinkName}`);
-
-        this.state.selectedCategory = null;
-        this.state.selectedCategoryName = null;
-        this.state.selectedDrink = null;
-        this.state.selectedDrinkName = null;
-        this.state.selectedDrinkPrice = null;
-
-        setTimeout(() => {
-            this.state.screen = 'categories';
-            this.render();
-        }, 800);
-    }
-
-    goToHistoric() {
-        this.state.screen = 'historic';
-        this.render();
-    }
-
-    goToAdmin() {
-        this.state.screen = 'admin';
-        this.render();
-    }
-
-    backToCategories() {
-        this.state.selectedCategory = null;
-        this.state.selectedCategoryName = null;
-        this.state.selectedDrink = null;
-        this.state.selectedDrinkName = null;
-        this.state.selectedDrinkPrice = null;
-        this.state.screen = 'categories';
-        this.render();
-    }
-
-    backToDrinks() {
-        this.state.selectedDrink = null;
-        this.state.selectedDrinkName = null;
-        this.state.selectedDrinkPrice = null;
-        this.state.screen = 'drinks';
-        this.render();
-    }
-
-    // ============================================
-    // NOTIFICATION
-    // ============================================
-
-    showNotification(message) {
-        const notif = document.createElement('div');
-        notif.className = 'notification';
-        notif.textContent = message;
-        document.body.appendChild(notif);
-
-        setTimeout(() => {
-            notif.classList.add('hide');
-            setTimeout(() => notif.remove(), 400);
-        }, 2000);
-    }
-
-    // ============================================
-    // RENDU PRINCIPAL
-    // ============================================
-
-    render() {
-        const app = document.getElementById('app');
-        
-        switch(this.state.screen) {
-            case 'categories':
-                app.innerHTML = this.renderCategories();
-                break;
-            case 'drinks':
-                app.innerHTML = this.renderDrinks();
-                break;
-            case 'rooms':
-                app.innerHTML = this.renderRooms();
-                break;
-            case 'historic':
-                app.innerHTML = this.renderHistoric();
-                break;
-            case 'admin':
-                app.innerHTML = this.renderAdmin();
-                break;
-        }
-    }
-
-    // ============================================
+const DATA = {
+    // ========================================
     // CATÉGORIES
-    // ============================================
+    // ========================================
+    categories: [
+        { id: 1, name: "Cocktails", color: "#FF6B6B", order: 1 },
+        { id: 2, name: "Mocktails", color: "#6C5CE7", order: 2 },
+        { id: 3, name: "Planches", color: "#00B894", order: 3 },
+        { id: 4, name: "Chauds", color: "#E17055", order: 4 },
+        { id: 5, name: "Digestifs & Vins", color: "#2D3436", order: 5 },
+        { id: 6, name: "Apéritifs", color: "#0984E3", order: 6 },
+        { id: 7, name: "Whiskys / Rhums", color: "#D35400", order: 7 },
+        { id: 8, name: "Bières", color: "#F1C40F", order: 8 },
+        { id: 9, name: "Softs", color: "#74B9FF", order: 9 }
+    ],
 
-    renderCategories() {
-        const categories = DATA.categories.sort((a, b) => a.order - b.order);
+    // ========================================
+    // BOISSONS (TA CARTE BAR ACTUALISÉE)
+    // ========================================
+    drinks: [
+        // ===== COCKTAILS =====
+        { id: 1, name: "Cuba Libre", category: 1, price: 6.00, order: 1 },
+        { id: 2, name: "Tequila Sunrise", category: 1, price: 6.00, order: 2 },
+        { id: 3, name: "Planteur", category: 1, price: 6.00, order: 3 },
+        { id: 4, name: "Americano", category: 1, price: 6.00, order: 4 },
+        { id: 5, name: "Manhattan", category: 1, price: 6.00, order: 5 },
+        { id: 6, name: "Margarita", category: 1, price: 6.00, order: 6 },
+        { id: 7, name: "Mojito", category: 1, price: 7.00, order: 7 },
+        { id: 8, name: "Negroni", category: 1, price: 8.00, order: 8 },
 
-        return `
-            <div class="screen">
-                <div class="screen-header">
-                    <h1>Sélectionnez une catégorie</h1>
-                    <p>Quelle type de boisson ?</p>
-                </div>
+        // ===== MOCKTAILS =====
+        { id: 9, name: "Le Conquérant", category: 2, price: 5.00, order: 1 },
+        { id: 10, name: "Le Tonus", category: 2, price: 5.00, order: 2 },
+        { id: 11, name: "L'Impératrice", category: 2, price: 5.00, order: 3 },
+        { id: 12, name: "L'Abracadabresque", category: 2, price: 5.00, order: 4 },
 
-                <div class="screen-content">
-                    <div class="grid-categories">
-                        ${categories.map(cat => `
-                            <button 
-                                class="btn-category" 
-                                style="background-color: ${cat.color}"
-                                onclick="app.selectCategory(${cat.id}, '${cat.name}')"
-                            >
-                                ${cat.name}
-                            </button>
-                        `).join('')}
-                    </div>
-                </div>
+        // ===== PLANCHES =====
+        { id: 13, name: "La Fromagère", category: 3, price: 7.00, order: 1 },
+        { id: 14, name: "La Charcutière", category: 3, price: 7.00, order: 2 },
+        { id: 15, name: "La Gourmande", category: 3, price: 10.00, order: 3 },
 
-                <div class="screen-footer">
-                    <button class="btn-nav" onclick="app.goToHistoric()">📋 Historique</button>
-                    <button class="btn-nav" onclick="app.goToAdmin()">⚙️ Admin</button>
-                </div>
-            </div>
+        // ===== CHAUX / CHAUDS =====
+        { id: 16, name: "Ristretto", category: 4, price: 1.30, order: 1 },
+        { id: 17, name: "Expresso", category: 4, price: 1.30, order: 2 },
+        { id: 18, name: "Double allongé", category: 4, price: 2.30, order: 3 },
+        { id: 19, name: "Café latte", category: 4, price: 1.60, order: 4 },
+        { id: 20, name: "Chocolat", category: 4, price: 2.30, order: 5 },
+        { id: 21, name: "Thé", category: 4, price: 3.00, order: 6 },
+        { id: 22, name: "Infusion", category: 4, price: 3.00, order: 7 },
 
-            <button class="btn-admin" onclick="app.goToAdmin()">⚙️</button>
-        `;
-    }
+        // ===== DIGESTIFS & VINS =====
+        { id: 23, name: "Malibu (4cl)", category: 5, price: 6.00, order: 1 },
+        { id: 24, name: "Get 27 (4cl)", category: 5, price: 6.00, order: 2 },
+        { id: 25, name: "Get 31 (4cl)", category: 5, price: 6.00, order: 3 },
+        { id: 26, name: "Baileys (4cl)", category: 5, price: 6.00, order: 4 },
+        { id: 27, name: "Cognac VSOP", category: 5, price: 7.00, order: 5 },
+        { id: 28, name: "Calvados", category: 5, price: 7.00, order: 6 },
+        { id: 29, name: "Verre de vin", category: 5, price: 3.50, order: 7 },
+        { id: 30, name: "Coupe de bulles", category: 5, price: 18.00, order: 8 },
 
-    // ============================================
-    // BOISSONS
-    // ============================================
+        // ===== APÉRITIFS =====
+        { id: 31, name: "Martini", category: 6, price: 3.50, order: 1 },
+        { id: 32, name: "Porto", category: 6, price: 3.50, order: 2 },
+        { id: 33, name: "Lillet", category: 6, price: 3.50, order: 3 },
+        { id: 34, name: "Kir", category: 6, price: 3.50, order: 4 },
+        { id: 35, name: "Ricard", category: 6, price: 3.50, order: 5 },
+        { id: 36, name: "Aperol", category: 6, price: 3.50, order: 6 },
+        { id: 37, name: "Vodka", category: 6, price: 5.00, order: 7 },
+        { id: 38, name: "Gin", category: 6, price: 5.00, order: 8 },
+        { id: 39, name: "Tequila", category: 6, price: 5.00, order: 9 },
 
-    renderDrinks() {
-        const drinks = DATA.drinks
-            .filter(d => d.category === this.state.selectedCategory)
-            .sort((a, b) => a.order - b.order);
+        // ===== WHISKYS / RHUMS =====
+        { id: 40, name: "Jack Daniel's", category: 7, price: 5.00, order: 1 },
+        { id: 41, name: "Jameson", category: 7, price: 6.00, order: 2 },
+        { id: 42, name: "Glenlivet", category: 7, price: 7.00, order: 3 },
+        { id: 43, name: "Havana Club", category: 7, price: 5.00, order: 4 },
+        { id: 44, name: "Saint James", category: 7, price: 5.00, order: 5 },
+        { id: 45, name: "Diplomatico", category: 7, price: 8.00, order: 6 },
 
-        return `
-            <div class="screen">
-                <div class="screen-header">
-                    <h1>${this.state.selectedCategoryName}</h1>
-                    <p>Choisissez une boisson</p>
-                </div>
+        // ===== BIÈRES =====
+        { id: 46, name: "Heineken", category: 8, price: 3.50, order: 1 },
+        { id: 47, name: "Hoegaarden", category: 8, price: 4.50, order: 2 },
+        { id: 48, name: "Desperados", category: 8, price: 4.50, order: 3 },
+        { id: 49, name: "IPA locale", category: 8, price: 6.00, order: 4 },
+        { id: 50, name: "Cidre", category: 8, price: 3.50, order: 5 },
 
-                <div class="screen-content">
-                    <div class="grid-drinks">
-                        ${drinks.map(drink => `
-                            <button 
-                                class="btn-drink"
-                                onclick="app.selectDrink(${drink.id}, '${drink.name}', ${drink.price})"
-                            >
-                                <span class="btn-drink-name">${drink.name}</span>
-                                <span class="btn-drink-price">${drink.price.toFixed(2)}€</span>
-                            </button>
-                        `).join('')}
-                    </div>
-                </div>
+        // ===== SOFTS =====
+        { id: 51, name: "Coca-Cola", category: 9, price: 3.50, order: 1 },
+        { id: 52, name: "Coca Zéro", category: 9, price: 3.50, order: 2 },
+        { id: 53, name: "Orangina", category: 9, price: 3.50, order: 3 },
+        { id: 54, name: "Ice Tea", category: 9, price: 3.50, order: 4 },
+        { id: 55, name: "Red Bull", category: 9, price: 5.00, order: 5 }
+    ],
 
-                <div class="screen-footer">
-                    <button class="btn-nav" onclick="app.backToCategories()">← Retour</button>
-                </div>
-            </div>
-        `;
-    }
-
-    // ============================================
+    // ========================================
     // CHAMBRES
-    // ============================================
+    // ========================================
+    rooms: [
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+        11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+        21, 22, 23, 24, 25, 26, 27, 28, 29, 30
+    ],
 
-    renderRooms() {
-        return `
-            <div class="screen">
-                <div class="screen-header">
-                    <h1>Sélectionnez une chambre</h1>
-                    <p>${this.state.selectedDrinkName} (${this.state.selectedDrinkPrice.toFixed(2)}€)</p>
-                </div>
+    // ========================================
+    // CONSOMMATIONS
+    // ========================================
+    consumptions: JSON.parse(localStorage.getItem("bar_consumptions") || "[]")
+};
 
-                <div class="screen-content">
-                    <div class="grid-rooms">
-                        ${DATA.rooms.map(room => `
-                            <button 
-                                class="btn-room"
-                                onclick="app.selectRoom(${room})"
-                            >
-                                ${room}
-                            </button>
-                        `).join('')}
-                    </div>
-                </div>
+// ============================================
+// FONCTIONS
+// ============================================
 
-                <div class="screen-footer">
-                    <button class="btn-nav" onclick="app.backToDrinks()">← Retour</button>
-                </div>
-            </div>
-        `;
-    }
-
-    // ============================================
-    // HISTORIQUE
-    // ============================================
-
-    renderHistoric() {
-        const todayConsumptions = getTodayConsumptions();
-        const total = todayConsumptions.reduce((sum, c) => sum + c.price, 0);
-
-        return `
-            <div class="screen">
-                <div class="screen-header">
-                    <h1>Consommations du jour</h1>
-                    <p>Total: ${total.toFixed(2)}€</p>
-                </div>
-
-                <div class="screen-content">
-                    ${todayConsumptions.length === 0 ? `
-                        <div class="history-empty">
-                            <p>Aucune consommation</p>
-                        </div>
-                    ` : `
-                        <div class="history-list">
-                            ${todayConsumptions.map(c => `
-                                <div class="history-item">
-                                    <div>
-                                        Chambre ${c.room} - ${c.drinkName}
-                                    </div>
-                                    <div>${c.price.toFixed(2)}€</div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    `}
-                </div>
-
-                <div class="screen-footer">
-                    <button class="btn-nav" onclick="app.backToCategories()">← Retour</button>
-                </div>
-            </div>
-        `;
-    }
-
-    // ============================================
-    // ADMIN
-    // ============================================
-
-    renderAdmin() {
-        return `
-            <div class="screen">
-                <div class="screen-header">
-                    <h1>Admin</h1>
-                </div>
-
-                <div class="screen-content">
-                    <p>Consommations: ${DATA.consumptions.length}</p>
-                </div>
-
-                <div class="screen-footer">
-                    <button class="btn-nav" onclick="app.backToCategories()">← Retour</button>
-                </div>
-            </div>
-        `;
-    }
+function saveConsumptions() {
+    localStorage.setItem("bar_consumptions", JSON.stringify(DATA.consumptions));
 }
 
-// ============================================
-// INIT
-// ============================================
+function addConsumption(room, drinkId) {
+    const drink = DATA.drinks.find(d => d.id === drinkId);
+    if (!drink) return;
 
-let app;
-document.addEventListener('DOMContentLoaded', () => {
-    app = new BarApp();
-});
+    DATA.consumptions.push({
+        id: Date.now(),
+        room,
+        drinkName: drink.name,
+        price: drink.price,
+        date: new Date().toISOString()
+    });
+
+    saveConsumptions();
+}
+
+function getTodayConsumptions() {
+    const today = new Date().toISOString().split("T")[0];
+    return DATA.consumptions.filter(c => c.date.startsWith(today));
+}
