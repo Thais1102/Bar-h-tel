@@ -91,7 +91,7 @@ class BarApp {
         return `
             <div class="screen">
                 <div class="screen-header">
-                    <h1>Bar Hôtel</h1>
+                    <img src="Logo.png" class="app-logo">
                     <p>Sélectionnez une catégorie</p>
                 </div>
 
