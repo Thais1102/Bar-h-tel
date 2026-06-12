@@ -13,53 +13,43 @@ class BarApp {
         this.render();
     }
 
-    // =========================
+    // ======================
     // NAVIGATION
-    // =========================
+    // ======================
 
-    selectCategory(id) {
-        this.state.category = id;
+    selectCategory(cat) {
+        this.state.category = cat;
         this.state.screen = "drinks";
         this.render();
     }
 
-    selectDrink(id) {
-        this.state.drink = id;
+    selectDrink(drink) {
+        this.state.drink = drink;
         this.state.screen = "rooms";
         this.render();
     }
 
     selectRoom(room) {
-        addConsumption(room, this.state.drink);
+        const consumption = {
+            id: Date.now(),
+            room,
+            drinkName: this.state.drink.name,
+            price: this.state.drink.price,
+            date: new Date()
+        };
 
-        this.showNotif("Ajouté ✔ Chambre " + room);
+        DATA.consumptions.push(consumption);
+        localStorage.setItem("bar", JSON.stringify(DATA.consumptions));
+
+        this.toast(`Ch ${room} - ${this.state.drink.name}`);
 
         this.state = { screen: "categories", category: null, drink: null };
         this.render();
     }
 
-    back() {
-        this.state.screen = "categories";
-        this.render();
-    }
-
-    // =========================
-    // NOTIF
-    // =========================
-
-    showNotif(text) {
-        const n = document.createElement("div");
-        n.className = "notif";
-        n.innerText = text;
-
-        document.body.appendChild(n);
-
-        setTimeout(() => n.remove(), 1500);
-    }
-
-    // =========================
-    // RENDER
-    // =========================
+    // ======================
+    // UI
+    // ======================
 
     render() {
         const app = document.getElementById("app");
@@ -77,10 +67,6 @@ class BarApp {
         }
     }
 
-    // =========================
-    // CATEGORIES
-    // =========================
-
     renderCategories() {
         return `
         <div class="screen">
@@ -88,8 +74,7 @@ class BarApp {
 
             <div class="grid">
                 ${DATA.categories.map(c => `
-                    <button onclick="app.selectCategory(${c.id})"
-                        style="background:${c.color}">
+                    <button onclick="app.selectCategory(${c.id})">
                         ${c.name}
                     </button>
                 `).join("")}
@@ -97,40 +82,31 @@ class BarApp {
         </div>`;
     }
 
-    // =========================
-    // DRINKS
-    // =========================
-
     renderDrinks() {
         const drinks = DATA.drinks.filter(d => d.category === this.state.category);
 
         return `
         <div class="screen">
-            <button onclick="app.back()">← Retour</button>
-
             <h1>Boissons</h1>
+
+            <button onclick="app.state.screen='categories';app.render()">← Retour</button>
 
             <div class="grid">
                 ${drinks.map(d => `
-                    <button onclick="app.selectDrink(${d.id})">
-                        ${d.name}<br>
-                        ${d.price}€
+                    <button onclick='app.selectDrink(${JSON.stringify(d)})'>
+                        ${d.name}<br>${d.price}€
                     </button>
                 `).join("")}
             </div>
         </div>`;
     }
 
-    // =========================
-    // ROOMS
-    // =========================
-
     renderRooms() {
         return `
         <div class="screen">
-            <button onclick="app.back()">← Retour</button>
-
             <h1>Chambres</h1>
+
+            <button onclick="app.state.screen='drinks';app.render()">← Retour</button>
 
             <div class="grid">
                 ${DATA.rooms.map(r => `
@@ -141,9 +117,22 @@ class BarApp {
             </div>
         </div>`;
     }
+
+    // ======================
+    // NOTIF
+    // ======================
+
+    toast(msg) {
+        const div = document.createElement("div");
+        div.className = "toast";
+        div.innerText = msg;
+
+        document.body.appendChild(div);
+
+        setTimeout(() => div.remove(), 1500);
+    }
 }
 
-// INIT
 let app;
 document.addEventListener("DOMContentLoaded", () => {
     app = new BarApp();
