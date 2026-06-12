@@ -22,10 +22,6 @@ class BarApp {
         this.render();
     }
 
-    // -----------------------
-    // Sélections
-    // -----------------------
-
     selectCategory(id) {
         this.state.selectedCategory = id;
         this.state.screen = "drinks";
@@ -47,10 +43,7 @@ class BarApp {
             date: new Date().toISOString()
         });
 
-        localStorage.setItem(
-            "consos",
-            JSON.stringify(DATA.consumptions)
-        );
+        localStorage.setItem("consos", JSON.stringify(DATA.consumptions));
 
         alert("Consommation ajoutée ✔");
 
@@ -61,27 +54,18 @@ class BarApp {
         this.render();
     }
 
-    // -----------------------
-    // Suppression caisse
-    // -----------------------
-
     deleteConsumption(id) {
         if (!confirm("Supprimer cette consommation ?")) return;
 
-        DATA.consumptions = DATA.consumptions.filter(
-            c => c.id !== id
-        );
+        DATA.consumptions = DATA.consumptions.filter(c => c.id !== id);
 
-        localStorage.setItem(
-            "consos",
-            JSON.stringify(DATA.consumptions)
-        );
+        localStorage.setItem("consos", JSON.stringify(DATA.consumptions));
 
         this.render();
     }
 
     // -----------------------
-    // Écrans
+    // ÉCRAN CATÉGORIES (LOGO ICI)
     // -----------------------
 
     renderCategories() {
@@ -91,7 +75,7 @@ class BarApp {
         return `
             <div class="screen">
                 <div class="screen-header">
-                    <img src="Logo.png" class="app-logo">
+                    <img src="./Logo.png" class="app-logo">
                     <p>Sélectionnez une catégorie</p>
                 </div>
 
@@ -107,8 +91,7 @@ class BarApp {
                 </div>
 
                 <div class="screen-footer">
-                    <button class="btn-nav"
-                        onclick="app.showCash()">
+                    <button class="btn-nav" onclick="app.showCash()">
                         📊 Caisse
                     </button>
                 </div>
@@ -139,8 +122,7 @@ class BarApp {
                 </div>
 
                 <div class="screen-footer">
-                    <button class="btn-nav"
-                        onclick="app.back()">
+                    <button class="btn-nav" onclick="app.back()">
                         ← Retour
                     </button>
                 </div>
@@ -167,8 +149,7 @@ class BarApp {
                 </div>
 
                 <div class="screen-footer">
-                    <button class="btn-nav"
-                        onclick="app.back()">
+                    <button class="btn-nav" onclick="app.back()">
                         ← Retour
                     </button>
                 </div>
@@ -182,7 +163,6 @@ class BarApp {
     }
 
     renderCash() {
-
         const grouped = {};
 
         DATA.consumptions.forEach(c => {
@@ -216,13 +196,9 @@ class BarApp {
                                     ${grouped[day][room].map(c => `
                                         <div style="display:flex;justify-content:space-between;align-items:center;margin:4px 0;">
                                             <span>${c.drinkName}</span>
-
                                             <div>
                                                 ${c.price.toFixed(2)} €
-
-                                                <button
-                                                    onclick="app.deleteConsumption(${c.id})"
-                                                    style="margin-left:8px;">
+                                                <button onclick="app.deleteConsumption(${c.id})">
                                                     🗑️
                                                 </button>
                                             </div>
@@ -244,10 +220,6 @@ class BarApp {
         `;
     }
 
-    // -----------------------
-    // Render principal
-    // -----------------------
-
     render() {
         const root = document.getElementById("app");
 
@@ -255,15 +227,12 @@ class BarApp {
             case "categories":
                 root.innerHTML = this.renderCategories();
                 break;
-
             case "drinks":
                 root.innerHTML = this.renderDrinks();
                 break;
-
             case "rooms":
                 root.innerHTML = this.renderRooms();
                 break;
-
             case "cash":
                 root.innerHTML = this.renderCash();
                 break;
@@ -272,7 +241,7 @@ class BarApp {
 }
 
 // -----------------------
-// Initialisation
+// INIT
 // -----------------------
 
 let app;
