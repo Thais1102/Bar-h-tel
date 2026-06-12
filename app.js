@@ -12,7 +12,7 @@ class BarApp {
             selectedDrinkName: null,
             selectedDrinkPrice: null
         };
-        
+
         this.init();
     }
 
@@ -40,415 +40,228 @@ class BarApp {
     }
 
     selectRoom(roomNumber) {
-        // Enregistrer la consommation
         addConsumption(roomNumber, this.state.selectedDrink);
 
-        // Afficher la notification
         this.showNotification(`✓ Chambre ${roomNumber} - ${this.state.selectedDrinkName}`);
 
-        // Réinitialiser l'état
         this.state.selectedCategory = null;
-        this.state.selectedCategoryName = null;
         this.state.selectedDrink = null;
+        this.state.selectedCategoryName = null;
         this.state.selectedDrinkName = null;
-        this.state.selectedDrinkPrice = null;
 
-        // Retour à l'accueil
         setTimeout(() => {
             this.state.screen = 'categories';
             this.render();
-        }, 800);
-    }
-
-    goToHistoric() {
-        this.state.screen = 'historic';
-        this.render();
-    }
-
-    goToAdmin() {
-        this.state.screen = 'admin';
-        this.render();
-    }
-
-    backToCategories() {
-        this.state.selectedCategory = null;
-        this.state.selectedCategoryName = null;
-        this.state.selectedDrink = null;
-        this.state.selectedDrinkName = null;
-        this.state.selectedDrinkPrice = null;
-        this.state.screen = 'categories';
-        this.render();
-    }
-
-    backToDrinks() {
-        this.state.selectedDrink = null;
-        this.state.selectedDrinkName = null;
-        this.state.selectedDrinkPrice = null;
-        this.state.screen = 'drinks';
-        this.render();
+        }, 600);
     }
 
     // ============================================
-    // NOTIFICATION
+    // CAISSE RAPIDE
+    // ============================================
+
+    goToCashier() {
+        this.state.screen = 'cashier';
+        this.render();
+    }
+
+    selectQuickCategory(id, name) {
+        this.state.selectedCategory = id;
+        this.state.selectedCategoryName = name;
+        this.render();
+    }
+
+    selectQuickDrink(id, name, price) {
+        this.state.selectedDrink = id;
+        this.state.selectedDrinkName = name;
+        this.state.selectedDrinkPrice = price;
+        this.render();
+    }
+
+    selectQuickRoom(room) {
+        addConsumption(room, this.state.selectedDrink);
+
+        this.showNotification(`✓ ${room} - ${this.state.selectedDrinkName}`);
+    }
+
+    // ============================================
+    // NOTIFICATIONS
     // ============================================
 
     showNotification(message) {
         const notif = document.createElement('div');
         notif.className = 'notification';
         notif.textContent = message;
+
         document.body.appendChild(notif);
 
         setTimeout(() => {
             notif.classList.add('hide');
-            setTimeout(() => notif.remove(), 400);
-        }, 2000);
+            setTimeout(() => notif.remove(), 300);
+        }, 1200);
     }
 
     // ============================================
-    // RENDU PRINCIPAL
+    // RENDER PRINCIPAL
     // ============================================
 
     render() {
         const app = document.getElementById('app');
-        
-        switch(this.state.screen) {
+
+        switch (this.state.screen) {
+
             case 'categories':
                 app.innerHTML = this.renderCategories();
                 break;
+
             case 'drinks':
                 app.innerHTML = this.renderDrinks();
                 break;
+
             case 'rooms':
                 app.innerHTML = this.renderRooms();
                 break;
-            case 'historic':
-                app.innerHTML = this.renderHistoric();
-                break;
-            case 'admin':
-                app.innerHTML = this.renderAdmin();
+
+            case 'cashier':
+                app.innerHTML = this.renderCashier();
                 break;
         }
     }
 
     // ============================================
-    // ÉCRAN 1: CATÉGORIES
+    // CATEGORIES
     // ============================================
 
     renderCategories() {
-        const categories = DATA.categories.sort((a, b) => a.order - b.order);
+        const categories = DATA.categories.sort((a,b)=>a.order-b.order);
 
         return `
             <div class="screen">
-                <div class="screen-header">
-                    <h1>Sélectionnez une catégorie</h1>
-                    <p>Quelle type de boisson ?</p>
+                <h1>🍸 Bar Hôtel</h1>
+
+                <div class="grid-categories">
+                    ${categories.map(c => `
+                        <button 
+                            onclick="app.selectCategory(${c.id}, '${c.name}')"
+                            style="background:${c.color}"
+                        >
+                            ${c.name}
+                        </button>
+                    `).join('')}
                 </div>
-                <div class="screen-content">
-                    <div class="grid-categories">
-                        ${categories.map(cat => `
-                            <button 
-                                class="btn-category" 
-                                style="background-color: ${cat.color}"
-                                onclick="app.selectCategory(${cat.id}, '${cat.name}')"
-                            >
-                                ${cat.name}
-                            </button>
-                        `).join('')}
-                    </div>
-                </div>
-                <div class="screen-footer">
-                    <button class="btn-nav" onclick="app.goToHistoric()">📋 Historique</button>
-                    <button class="btn-nav" onclick="app.goToAdmin()">⚙️ Admin</button>
+
+                <div style="margin-top:15px;">
+                    <button onclick="app.goToCashier()">⚡ Caisse rapide</button>
                 </div>
             </div>
-            <button class="btn-admin" onclick="app.goToAdmin()">⚙️</button>
         `;
     }
 
     // ============================================
-    // ÉCRAN 2: BOISSONS
+    // DRINKS
     // ============================================
 
     renderDrinks() {
-        const drinks = DATA.drinks
-            .filter(d => d.category === this.state.selectedCategory)
-            .sort((a, b) => a.order - b.order);
-
-        const category = DATA.categories.find(c => c.id === this.state.selectedCategory);
+        const drinks = DATA.drinks.filter(d => d.category === this.state.selectedCategory);
 
         return `
             <div class="screen">
-                <div class="screen-header">
-                    <h1>${this.state.selectedCategoryName}</h1>
-                    <p>Choisissez une boisson</p>
+                <h2>${this.state.selectedCategoryName}</h2>
+
+                <div class="grid-drinks">
+                    ${drinks.map(d => `
+                        <button onclick="app.selectDrink(${d.id}, '${d.name}', ${d.price})">
+                            ${d.name}
+                        </button>
+                    `).join('')}
                 </div>
-                <div class="screen-content">
-                    <div class="grid-drinks">
-                        ${drinks.map(drink => `
-                            <button 
-                                class="btn-drink"
-                                onclick="app.selectDrink(${drink.id}, '${drink.name}', ${drink.price})"
-                            >
-                                <span class="btn-drink-name">${drink.name}</span>
-                                <span class="btn-drink-price">${drink.price.toFixed(2)}€</span>
-                            </button>
-                        `).join('')}
-                    </div>
-                </div>
-                <div class="screen-footer">
-                    <button class="btn-nav" onclick="app.backToCategories()">← Retour</button>
-                </div>
+
+                <button onclick="app.state.screen='categories'; app.render()">← Retour</button>
             </div>
         `;
     }
 
     // ============================================
-    // ÉCRAN 3: CHAMBRES
+    // ROOMS
     // ============================================
 
     renderRooms() {
         return `
             <div class="screen">
-                <div class="screen-header">
-                    <h1>Sélectionnez une chambre</h1>
-                    <p>${this.state.selectedCategoryName} - ${this.state.selectedDrinkName} (${this.state.selectedDrinkPrice.toFixed(2)}€)</p>
+                <h2>${this.state.selectedDrinkName}</h2>
+
+                <div class="grid-rooms">
+                    ${DATA.rooms.map(r => `
+                        <button onclick="app.selectRoom(${r})">
+                            ${r}
+                        </button>
+                    `).join('')}
                 </div>
-                <div class="screen-content">
-                    <div class="grid-rooms">
-                        ${DATA.rooms.map(room => `
-                            <button 
-                                class="btn-room"
-                                onclick="app.selectRoom(${room})"
-                            >
-                                ${room}
-                            </button>
-                        `).join('')}
-                    </div>
-                </div>
-                <div class="screen-footer">
-                    <button class="btn-nav" onclick="app.backToDrinks()">← Retour</button>
-                </div>
+
+                <button onclick="app.state.screen='drinks'; app.render()">← Retour</button>
             </div>
         `;
     }
 
     // ============================================
-    // ÉCRAN 4: HISTORIQUE
+    // CAISSE RAPIDE (ULTRA SPEED)
     // ============================================
 
-    renderHistoric() {
-        const todayConsumptions = getTodayConsumptions();
-        const total = todayConsumptions.reduce((sum, c) => sum + c.price, 0);
+    renderCashier() {
+
+        const categories = DATA.categories.sort((a,b)=>a.order-b.order);
+
+        const drinks = this.state.selectedCategory
+            ? DATA.drinks.filter(d => d.category === this.state.selectedCategory)
+            : [];
 
         return `
             <div class="screen">
-                <div class="screen-header">
-                    <h1>Consommations du jour</h1>
-                    <p>Total: ${total.toFixed(2)}€ (${todayConsumptions.length} articles)</p>
+
+                <h1>⚡ CAISSE RAPIDE</h1>
+
+                <!-- CATEGORIES -->
+                <div style="display:flex; gap:5px; flex-wrap:wrap;">
+                    ${categories.map(c => `
+                        <button onclick="app.selectQuickCategory(${c.id}, '${c.name}')"
+                            style="background:${c.color}">
+                            ${c.name}
+                        </button>
+                    `).join('')}
                 </div>
-                <div class="screen-content">
-                    ${todayConsumptions.length === 0 ? `
-                        <div class="history-empty">
-                            <p>Aucune consommation enregistrée aujourd'hui</p>
-                        </div>
-                    ` : `
-                        <div class="history-list">
-                            ${todayConsumptions.reverse().map(consumption => {
-                                const date = new Date(consumption.date);
-                                const time = date.toLocaleTimeString('fr-FR', { 
-                                    hour: '2-digit', 
-                                    minute: '2-digit' 
-                                });
-                                return `
-                                    <div class="history-item">
-                                        <div class="history-item-info">
-                                            <div class="history-item-time">${time}</div>
-                                            <div class="history-item-details">
-                                                <span class="history-item-room">Chambre ${consumption.room}</span>
-                                                <span>${consumption.categoryName}</span>
-                                                <span> - ${consumption.drinkName}</span>
-                                            </div>
-                                        </div>
-                                        <div class="history-item-price">${consumption.price.toFixed(2)}€</div>
-                                        <button 
-                                            class="btn-delete"
-                                            onclick="app.deleteConsumption(${consumption.id})"
-                                        >
-                                            🗑️
-                                        </button>
-                                    </div>
-                                `;
-                            }).join('')}
-                        </div>
-                    `}
+
+                <hr>
+
+                <!-- DRINKS -->
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px;">
+                    ${drinks.map(d => `
+                        <button onclick="app.selectQuickDrink(${d.id}, '${d.name}', ${d.price})">
+                            ${d.name}
+                        </button>
+                    `).join('')}
                 </div>
-                <div class="screen-footer">
-                    <button class="btn-nav" onclick="app.backToCategories()">← Retour</button>
-                    <button class="btn-nav btn-primary" onclick="app.exportToCSV()">📥 Exporter CSV</button>
+
+                <hr>
+
+                <!-- ROOMS -->
+                <div style="display:grid; grid-template-columns:repeat(5,1fr); gap:5px;">
+                    ${DATA.rooms.map(r => `
+                        <button onclick="app.selectQuickRoom(${r})">
+                            ${r}
+                        </button>
+                    `).join('')}
                 </div>
+
+                <div style="margin-top:10px;">
+                    <button onclick="app.state.screen='categories'; app.render()">← Retour</button>
+                </div>
+
             </div>
         `;
-    }
-
-    deleteConsumption(consumptionId) {
-        if (confirm('Supprimer cette consommation ?')) {
-            deleteConsumption(consumptionId);
-            this.goToHistoric();
-            this.showNotification('Consommation supprimée');
-        }
-    }
-
-    exportToCSV() {
-        exportToCSV();
-        this.showNotification('Fichier exporté');
-    }
-
-    // ============================================
-    // ÉCRAN 5: ADMIN
-    // ============================================
-
-    renderAdmin() {
-        return `
-            <div class="screen">
-                <div class="admin-screen">
-                    <button class="btn-close" onclick="app.backToCategories()">✕ Fermer</button>
-                    
-                    <h2>⚙️ Configuration</h2>
-
-                    <!-- CATÉGORIES -->
-                    <div class="admin-section">
-                        <h3>📂 Catégories</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Nom</th>
-                                    <th>Couleur</th>
-                                    <th>Ordre</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${DATA.categories.map(cat => `
-                                    <tr>
-                                        <td>${cat.name}</td>
-                                        <td><input type="color" value="${cat.color}" 
-                                            onchange="app.updateCategoryColor(${cat.id}, this.value)"></td>
-                                        <td><input type="number" value="${cat.order}" 
-                                            onchange="app.updateCategoryOrder(${cat.id}, this.value)" 
-                                            style="width: 60px;"></td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- BOISSONS -->
-                    <div class="admin-section">
-                        <h3>🍹 Boissons</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Catégorie</th>
-                                    <th>Nom</th>
-                                    <th>Prix</th>
-                                    <th>Ordre</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${DATA.drinks.map(drink => {
-                                    const cat = DATA.categories.find(c => c.id === drink.category);
-                                    return `
-                                        <tr>
-                                            <td>${cat.name}</td>
-                                            <td><input type="text" value="${drink.name}" 
-                                                onchange="app.updateDrinkName(${drink.id}, this.value)"></td>
-                                            <td><input type="number" value="${drink.price}" step="0.01"
-                                                onchange="app.updateDrinkPrice(${drink.id}, this.value)" 
-                                                style="width: 80px;"></td>
-                                            <td><input type="number" value="${drink.order}" 
-                                                onchange="app.updateDrinkOrder(${drink.id}, this.value)" 
-                                                style="width: 60px;"></td>
-                                        </tr>
-                                    `;
-                                }).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- CHAMBRES -->
-                    <div class="admin-section">
-                        <h3>🛏️ Chambres (${DATA.rooms.length})</h3>
-                        <p style="color: #666; font-size: 14px;">
-                            ${DATA.rooms.join(', ')}
-                        </p>
-                    </div>
-
-                    <!-- CONSOMMATIONS -->
-                    <div class="admin-section">
-                        <h3>📊 Statistiques</h3>
-                        <p style="font-size: 18px; color: #333;">
-                            Consommations enregistrées: <strong>${DATA.consumptions.length}</strong><br>
-                            Total: <strong>${DATA.consumptions.reduce((sum, c) => sum + c.price, 0).toFixed(2)}€</strong>
-                        </p>
-                    </div>
-
-                    <div class="admin-buttons">
-                        <button class="btn-secondary" onclick="app.backToCategories()">← Retour</button>
-                        <button class="btn-primary" onclick="app.clearAllData()">🗑️ Réinitialiser</button>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    updateCategoryColor(categoryId, color) {
-        const category = DATA.categories.find(c => c.id === categoryId);
-        if (category) {
-            category.color = color;
-            this.render();
-        }
-    }
-
-    updateCategoryOrder(categoryId, order) {
-        const category = DATA.categories.find(c => c.id === categoryId);
-        if (category) {
-            category.order = parseInt(order);
-            this.render();
-        }
-    }
-
-    updateDrinkName(drinkId, name) {
-        const drink = DATA.drinks.find(d => d.id === drinkId);
-        if (drink) {
-            drink.name = name;
-        }
-    }
-
-    updateDrinkPrice(drinkId, price) {
-        const drink = DATA.drinks.find(d => d.id === drinkId);
-        if (drink) {
-            drink.price = parseFloat(price);
-        }
-    }
-
-    updateDrinkOrder(drinkId, order) {
-        const drink = DATA.drinks.find(d => d.id === drinkId);
-        if (drink) {
-            drink.order = parseInt(order);
-        }
-    }
-
-    clearAllData() {
-        if (confirm('⚠️ Êtes-vous sûr ? Cela va supprimer TOUTES les consommations enregistrées.')) {
-            DATA.consumptions = [];
-            saveConsumptions();
-            this.showNotification('Données réinitialisées');
-            setTimeout(() => this.backToCategories(), 1000);
-        }
     }
 }
 
 // ============================================
-// INITIALISATION
+// INIT
 // ============================================
 
 let app;
