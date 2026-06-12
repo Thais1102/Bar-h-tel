@@ -1,0 +1,510 @@
+/* ============================================
+   STYLES - APPLICATION BAR HÔTEL
+   Optimisé pour iPad
+   ============================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f5f5f5;
+}
+
+body {
+    padding: 20px;
+    overflow: hidden;
+}
+
+#app {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ============================================
+   ÉCRANS GÉNÉRAUX
+   ============================================ */
+
+.screen {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.screen-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.screen-header h1 {
+    font-size: 52px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.screen-header p {
+    font-size: 24px;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.screen-content {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.screen-footer {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px solid #ddd;
+}
+
+/* ============================================
+   BOUTONS GÉNÉRAUX
+   ============================================ */
+
+button {
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+    -webkit-tap-highlight-color: transparent;
+}
+
+button:active {
+    transform: scale(0.96);
+    filter: brightness(0.9);
+}
+
+/* ============================================
+   ÉCRAN 1: CATÉGORIES
+   ============================================ */
+
+.grid-categories {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+    padding-right: 10px;
+}
+
+.btn-category {
+    padding: 40px 30px;
+    font-size: 28px;
+    color: white;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-weight: 700;
+}
+
+.btn-category:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* ============================================
+   ÉCRAN 2: BOISSONS
+   ============================================ */
+
+.grid-drinks {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    padding-right: 10px;
+}
+
+.btn-drink {
+    padding: 25px 15px;
+    font-size: 20px;
+    background: white;
+    color: #333;
+    border: 2px solid #ddd;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    min-height: 140px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-weight: 600;
+}
+
+.btn-drink:hover {
+    background: #f9f9f9;
+    border-color: #bbb;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.btn-drink-name {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.btn-drink-price {
+    display: block;
+    font-size: 24px;
+    font-weight: 700;
+    color: #4CAF50;
+}
+
+/* ============================================
+   ÉCRAN 3: CHAMBRES
+   ============================================ */
+
+.grid-rooms {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    padding-right: 10px;
+}
+
+.btn-room {
+    aspect-ratio: 1 / 1;
+    font-size: 48px;
+    font-weight: 700;
+    background: white;
+    color: #333;
+    border: 3px solid #333;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-room:hover {
+    background: #f0f0f0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* ============================================
+   ÉCRAN 4: HISTORIQUE
+   ============================================ */
+
+.history-empty {
+    text-align: center;
+    padding: 40px;
+    color: #999;
+}
+
+.history-empty p {
+    font-size: 24px;
+    margin-top: 10px;
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.history-item {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 4px solid #4CAF50;
+}
+
+.history-item-info {
+    flex: 1;
+}
+
+.history-item-time {
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+}
+
+.history-item-details {
+    font-size: 14px;
+    color: #666;
+    margin-top: 4px;
+}
+
+.history-item-room {
+    background: #f0f0f0;
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+.history-item-price {
+    font-size: 20px;
+    font-weight: 700;
+    color: #4CAF50;
+    margin: 0 15px;
+}
+
+.btn-delete {
+    background: #f44336;
+    color: white;
+    padding: 10px 15px;
+    font-size: 16px;
+    border-radius: 6px;
+}
+
+.btn-delete:hover {
+    background: #d32f2f;
+}
+
+/* ============================================
+   BOUTONS NAVIGATION
+   ============================================ */
+
+.btn-nav {
+    background: #f5f5f5;
+    color: #333;
+    border: 2px solid #ddd;
+    padding: 15px 25px;
+    font-size: 18px;
+    flex: 1;
+    border-radius: 8px;
+}
+
+.btn-nav:hover {
+    background: #e8e8e8;
+    border-color: #bbb;
+}
+
+.btn-admin {
+    background: #666;
+    color: white;
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    font-size: 32px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 100;
+}
+
+.btn-admin:hover {
+    background: #555;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.btn-close {
+    background: #f44336;
+    color: white;
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 6px;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+/* ============================================
+   NOTIFICATION / TOAST
+   ============================================ */
+
+.notification {
+    position: fixed;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #4CAF50;
+    color: white;
+    padding: 20px 40px;
+    border-radius: 8px;
+    font-size: 22px;
+    font-weight: 600;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    animation: slideDown 0.4s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateX(-50%) translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(-50%) translateY(-100%);
+        opacity: 0;
+    }
+}
+
+.notification.hide {
+    animation: slideUp 0.4s ease-in forwards;
+}
+
+/* ============================================
+   ÉCRAN ADMIN
+   ============================================ */
+
+.admin-screen {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    max-width: 600px;
+    margin: auto;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    position: relative;
+}
+
+.admin-screen h2 {
+    font-size: 32px;
+    margin-bottom: 25px;
+    color: #333;
+}
+
+.admin-section {
+    margin-bottom: 25px;
+}
+
+.admin-section h3 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    color: #666;
+}
+
+.admin-section table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+}
+
+.admin-section table th,
+.admin-section table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+    font-size: 16px;
+}
+
+.admin-section table th {
+    background: #f5f5f5;
+    font-weight: 600;
+    color: #333;
+}
+
+.admin-section table input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.admin-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.btn-primary {
+    background: #4CAF50;
+    color: white;
+    padding: 15px 30px;
+    font-size: 18px;
+    flex: 1;
+    border-radius: 8px;
+}
+
+.btn-primary:hover {
+    background: #45a049;
+}
+
+.btn-secondary {
+    background: #f5f5f5;
+    color: #333;
+    padding: 15px 30px;
+    font-size: 18px;
+    border: 2px solid #ddd;
+    flex: 1;
+    border-radius: 8px;
+}
+
+.btn-secondary:hover {
+    background: #e8e8e8;
+}
+
+/* ============================================
+   RESPONSIVE - iPad Landscape
+   ============================================ */
+
+@media (orientation: landscape) {
+    .screen-header h1 {
+        font-size: 40px;
+    }
+    
+    .grid-categories {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .grid-drinks {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .grid-rooms {
+        grid-template-columns: repeat(7, 1fr);
+    }
+}
+
+/* ============================================
+   SCROLLBAR CUSTOM
+   ============================================ */
+
+.screen-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.screen-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.screen-content::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+.screen-content::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
