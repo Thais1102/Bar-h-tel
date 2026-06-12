@@ -1,3 +1,7 @@
+/* =========================
+   BASE
+========================= */
+
 html, body {
     margin: 0;
     padding: 0;
@@ -5,6 +9,7 @@ html, body {
     height: 100%;
     overflow: hidden;
     font-family: Arial, sans-serif;
+
     background-image: url("Fond.png");
     background-size: cover;
     background-position: center;
@@ -16,19 +21,32 @@ html, body {
     box-sizing: border-box;
 }
 
+/* =========================
+   APP CONTAINER
+========================= */
+
 #app {
     width: 100vw;
     height: 100vh;
     background: transparent !important;
 }
 
+/* =========================
+   SCREEN
+========================= */
+
 .screen {
     height: 100%;
     padding: 20px;
     display: flex;
     flex-direction: column;
-    background: transparent !important;
+
+    background: rgba(0, 0, 0, 0.25); /* lisibilité sur image */
 }
+
+/* =========================
+   HEADER
+========================= */
 
 .screen-header {
     text-align: center;
@@ -38,18 +56,38 @@ html, body {
 h1 {
     font-size: 42px;
     margin: 0 0 10px 0;
+    color: white;
 }
 
 .screen-header p {
     font-size: 22px;
-    color: #666;
+    color: rgba(255, 255, 255, 0.8);
     margin: 0;
 }
+
+/* =========================
+   LOGO
+========================= */
+
+.app-logo {
+    height: 70px;
+    width: auto;
+    display: block;
+    margin: 0 auto 10px auto;
+}
+
+/* =========================
+   CONTENT
+========================= */
 
 .screen-content {
     flex: 1;
     overflow-y: auto;
 }
+
+/* =========================
+   FOOTER
+========================= */
 
 .screen-footer {
     display: flex;
@@ -57,7 +95,9 @@ h1 {
     margin-top: 15px;
 }
 
-/* Grilles */
+/* =========================
+   GRIDS
+========================= */
 
 .grid-categories,
 .grid-drinks,
@@ -77,24 +117,34 @@ h1 {
 
 .grid-rooms {
     grid-template-columns: repeat(7, 1fr);
+    max-height: 70vh;
+    overflow-y: auto;
+    padding-bottom: 20px;
 }
 
-/* Boutons */
+/* =========================
+   BOUTONS GLOBAUX
+========================= */
 
 button {
     border: none;
     border-radius: 14px;
-    background: #eaeaea;
+    background: rgba(255, 255, 255, 0.9);
     font-size: 22px;
     padding: 25px;
     cursor: pointer;
     touch-action: manipulation;
     transition: transform 0.1s;
+    color: #2b2b2b;
 }
 
 button:active {
     transform: scale(0.97);
 }
+
+/* =========================
+   CATEGORIES
+========================= */
 
 .btn-category {
     min-height: 130px;
@@ -103,19 +153,33 @@ button:active {
     color: white;
 }
 
+/* =========================
+   DRINKS
+========================= */
+
 .btn-drink {
     min-height: 110px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     gap: 8px;
+    color: #2b2b2b;
 }
+
+/* =========================
+   ROOMS
+========================= */
 
 .btn-room {
     aspect-ratio: 1;
     font-size: 34px;
     font-weight: bold;
+    color: #2b2b2b;
 }
+
+/* =========================
+   NAV BUTTONS
+========================= */
 
 .btn-nav {
     flex: 1;
@@ -123,7 +187,20 @@ button:active {
     font-size: 22px;
 }
 
-/* Notification */
+/* =========================
+   CAISSE
+========================= */
+
+.history-item {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+}
+
+/* =========================
+   TOAST
+========================= */
 
 .toast {
     position: fixed;
@@ -138,9 +215,12 @@ button:active {
     z-index: 9999;
 }
 
-/* Optimisation iPad paysage */
+/* =========================
+   RESPONSIVE IPAD
+========================= */
 
 @media screen and (min-width: 1000px) and (orientation: landscape) {
+
     .grid-categories {
         grid-template-columns: repeat(5, 1fr);
     }
@@ -156,10 +236,4 @@ button:active {
     h1 {
         font-size: 48px;
     }
-}
-
-.grid-rooms {
-    max-height: 70vh;
-    overflow-y: auto;
-    padding-bottom: 20px;
 }
