@@ -1,36 +1,35 @@
-/* ============================================
-   BAR HÔTEL - STYLE iPAD OPTIMISÉ
-   ============================================ */
-
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     -webkit-user-select: none;
     user-select: none;
-    -webkit-tap-highlight-color: transparent;
 }
 
 html, body {
     width: 100%;
     height: 100%;
-    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-    background: #f2f2f2;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f5f5f5;
+    touch-action: manipulation;
 }
 
 body {
-    overflow: hidden;
+    padding: 0;
+    overflow: auto;
 }
 
 #app {
     width: 100%;
-    height: 100%;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
+    position: relative;
+    z-index: 1;
 }
 
 /* ============================================
-   ÉCRANS
+   ÉCRANS GÉNÉRAUX
    ============================================ */
 
 .screen {
@@ -38,35 +37,39 @@ body {
     height: 100%;
     display: flex;
     flex-direction: column;
+    animation: fadeIn 0.3s ease-out;
+    pointer-events: auto;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 .screen-header {
     text-align: center;
-    padding: 20px;
+    margin-bottom: 30px;
 }
 
 .screen-header h1 {
-    font-size: 42px;
-    font-weight: 800;
-    color: #222;
+    font-size: 52px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 10px;
 }
 
 .screen-header p {
-    font-size: 20px;
+    font-size: 24px;
     color: #666;
-    margin-top: 8px;
 }
+
+/* ============================================
+   CONTENT
+   ============================================ */
 
 .screen-content {
     flex: 1;
     overflow-y: auto;
-    padding: 10px;
-}
-
-.screen-footer {
-    display: flex;
-    gap: 10px;
-    padding: 15px;
 }
 
 /* ============================================
@@ -75,139 +78,112 @@ body {
 
 button {
     border: none;
-    border-radius: 16px;
-    font-weight: 700;
+    border-radius: 12px;
     cursor: pointer;
-    transition: 0.15s;
+    font-weight: 600;
+    transition: all 0.2s;
+    -webkit-tap-highlight-color: transparent;
+    pointer-events: auto;
 }
 
 button:active {
     transform: scale(0.96);
-    opacity: 0.8;
 }
 
 /* ============================================
-   CATÉGORIES (GROS BOUTONS RAPIDES)
+   CATÉGORIES
    ============================================ */
 
 .grid-categories {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
 }
 
 .btn-category {
-    height: 180px;
+    padding: 40px 30px;
     font-size: 28px;
     color: white;
+    font-weight: 700;
+    min-height: 160px;
     display: flex;
     align-items: center;
     justify-content: center;
-    text-align: center;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
 }
 
 /* ============================================
-   BOISSONS (MODE CAISSE RAPIDE)
+   BOISSONS
    ============================================ */
 
 .grid-drinks {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
+    gap: 15px;
 }
 
 .btn-drink {
-    height: 140px;
+    padding: 25px 15px;
+    font-size: 20px;
     background: white;
-    border: 2px solid #e0e0e0;
+    border: 2px solid #ddd;
+    min-height: 140px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    font-size: 18px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-}
-
-.btn-drink:active {
-    background: #f0f0f0;
+    justify-content: center;
 }
 
 .btn-drink-price {
-    font-size: 22px;
-    color: #2ecc71;
-    margin-top: 5px;
+    font-size: 24px;
+    font-weight: 700;
+    color: #4CAF50;
 }
 
 /* ============================================
-   CHAMBRES (TRÈS GROS BOUTONS)
+   CHAMBRES
    ============================================ */
 
 .grid-rooms {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 10px;
+    gap: 12px;
 }
 
 .btn-room {
-    aspect-ratio: 1 / 1;
-    font-size: 42px;
+    aspect-ratio: 1;
+    font-size: 48px;
+    font-weight: 700;
     background: white;
     border: 3px solid #333;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
 }
 
 /* ============================================
-   HISTORIQUE
-   ============================================ */
-
-.history-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.history-item {
-    background: white;
-    padding: 15px;
-    border-radius: 10px;
-    display: flex;
-    justify-content: space-between;
-    font-size: 18px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-}
-
-/* ============================================
-   BOUTONS NAV
+   NAVIGATION
    ============================================ */
 
 .btn-nav {
+    background: #f5f5f5;
+    border: 2px solid #ddd;
+    padding: 15px 25px;
+    font-size: 18px;
     flex: 1;
-    padding: 18px;
-    font-size: 20px;
-    background: #eaeaea;
 }
 
-.btn-nav:active {
-    background: #dcdcdc;
-}
-
-/* bouton admin flottant */
 .btn-admin {
     position: fixed;
-    bottom: 25px;
-    right: 25px;
-    width: 75px;
-    height: 75px;
+    bottom: 30px;
+    right: 30px;
+    width: 70px;
+    height: 70px;
     border-radius: 50%;
     font-size: 32px;
-    background: #444;
+    background: #666;
     color: white;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    z-index: 100;
 }
 
 /* ============================================
-   NOTIFICATION
+   NOTIFICATIONS
    ============================================ */
 
 .notification {
@@ -215,16 +191,21 @@ button:active {
     top: 30px;
     left: 50%;
     transform: translateX(-50%);
-    background: #2ecc71;
+    background: #4CAF50;
     color: white;
-    padding: 18px 30px;
-    border-radius: 10px;
+    padding: 20px 40px;
+    border-radius: 8px;
     font-size: 22px;
-    font-weight: 700;
-    animation: pop 0.3s ease;
+    font-weight: 600;
+    z-index: 1000;
 }
 
-@keyframes pop {
-    from { transform: translateX(-50%) translateY(-20px); opacity: 0; }
-    to { transform: translateX(-50%) translateY(0); opacity: 1; }
+/* ============================================
+   IMPORTANT FIX CLIC iPAD
+   ============================================ */
+
+.screen,
+button,
+#app {
+    pointer-events: auto;
 }
